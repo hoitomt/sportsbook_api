@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = SportsbookApi::VERSION
   spec.authors       = ["Michael Hoitomt"]
   spec.email         = ["mhoitomt@primedia.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{Retrieves data from Sportsbook.ag using credentials}
+  spec.summary       = %q{Retrieves data from Sportsbook.ag using credentials}
   spec.homepage      = ""
   spec.license       = "MIT"
 
@@ -21,4 +21,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
   spec.add_dependency "mechanize", "~> 2.7.2"
+  spec.add_dependency "virtus", "~> 0.5.5"
 end

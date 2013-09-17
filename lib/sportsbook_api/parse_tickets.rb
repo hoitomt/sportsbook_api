@@ -5,7 +5,7 @@ module SportsbookApi
 		attr_accessor :document, :new_ticket_array, :new_ticket_line_item_array,
 									:ticket, :sb_bet_id, :ticket_rows,
 									:wager_date, :wager_type, :amount_wagered,
-									:amount_won, :outcome, :away_team, :away_score,
+									:amount_to_win, :outcome, :away_team, :away_score,
 									:home_team, :home_score, :line_item_date, :line_item_spread
 
 		def initialize(doc)
@@ -31,7 +31,7 @@ module SportsbookApi
 				:wager_date => @wager_date,
 				:type => @wager_type,
 				:amount_wagered => @amount_wagered,
-				:amount_won => @amount_won,
+				:amount_to_win => @amount_to_win,
 				:outcome => @outcome,
 				:ticket_line_items => set_line_items
 			)
@@ -71,7 +71,7 @@ module SportsbookApi
 		def set_wager_amounts(rows)
 			wager_amounts = rows[1].css('> td > span')[0]
 			set_amount_wagered(wager_amounts)
-			set_amount_won(wager_amounts)
+			set_amount_to_win(wager_amounts)
 		end
 
 		def set_amount_wagered(wager_amounts)
@@ -79,9 +79,9 @@ module SportsbookApi
 			@amount_wagered = match_txt.to_s.split(' ')[1] if match_txt
 		end
 
-		def set_amount_won(wager_amounts)
+		def set_amount_to_win(wager_amounts)
 			match_txt = wager_amounts.to_s.match(%r{to win \d*\W\d*})
-			@amount_won = match_txt.to_s.split(' ')[2] if match_txt
+			@amount_to_win = match_txt.to_s.split(' ')[2] if match_txt
 		end
 
 		def set_outcome(rows)
