@@ -17,8 +17,6 @@ module SportsbookApi
 			end
 		end
 
-		private
-
 		def result_tables
 			result_tables = @document.css('div#wagerDetails > table > tr > td > div > table')
 			result_tables ||= []
@@ -79,14 +77,6 @@ module SportsbookApi
 		end
 
 		def create_line_item(game)
-			# line_item = TicketLineItem.new(
-			# 	:away_team => @away_team,
-			# 	:away_score => @away_score,
-			# 	:home_team => @home_team,
-			# 	:home_score => @home_score,
-			# 	:line_item_date => @line_item_date,
-			# 	:line_item_spread => @line_item_spread
-			# )
 			{
 				away_team: away_team(game),
 				away_score: away_score(game),
@@ -125,56 +115,65 @@ module SportsbookApi
 
 		def games(table)
 			games = game_details_row(table).css('table')
-			games ||= []
+			games ||= Nokogiri::HTML ''
 		end
 
 		def teams(game)
 			teams = game.css('span')[0].try(:children)
-			teams ||= []
-		end
-
-		def home_data(game)
-			data = teams(game)[2].to_s.split(' ')
-			data ||= []
+			teams ||= ''
+			teams.to_s.split(line_separator)
 		end
 
 		def away_data(game)
-			data = teams(game)[0].to_s.split(' ')
+			data = teams(game).first.gsub(/<(.*?)>/, '').strip
 			data ||= []
+			data.split(' ')
 		end
 
-		def home_team(game)
-			home_data(game).first
+		def home_data(game)
+			data = teams(game).last.gsub(/<(.*?)>/, '').strip
+			data ||= []
+			data.split(' ')
 		end
 
 		def away_team(game)
 			away_data(game).first
 		end
 
-		def home_score(game)
-			home_data(game)[1]
-		end
-
 		def away_score(game)
 			away_data(game)[1]
 		end
 
+		def home_team(game)
+			home_data(game).first
+		end
+
+		def home_score(game)
+			home_data(game)[1]
+		end
+
 		def time_and_spread(game)
-			time_spread = game.css('span')[1].children
-			time_spread ||= []
+			time_spread = game.css('td').last.children
+			time_spread = time_spread.css('span').first.children
+			time_spread ||= ''
+			time_spread.to_s.split(line_separator)
 		end
 
 		def game_date(game)
-			wd = time_and_spread(game).first.to_s
+			wd = time_and_spread(game).first
 			wd.gsub!('ET', '')
-			wd.gsub!(/\(|\)/, ' ').try(:lstrip!).try(:rstrip!)
+			wd.gsub!(/\(|\)/, ' ').try(:strip!)
 			Time.strptime(wd, "%m/%d/%y %H:%M")
 		rescue
 			# invalid date
 		end
 
 		def game_spread(game)
-			time_and_spread(game)[2]
+			time_and_spread(game).last.try(:strip)
+		end
+
+		def line_separator
+			line_separator = /<br>/
 		end
 	end
 end

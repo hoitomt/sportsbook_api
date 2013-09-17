@@ -10,6 +10,11 @@ module TestHelper
     polish doc
   end
 
+  def sportsbook_game
+    doc = File.read(File.expand_path(File.dirname(__FILE__) + '/fixtures/sportsbook_game.html'))
+    polish doc
+  end
+
   def polish(doc)
     doc.gsub!(/\\r|\\t|\\n|\\/, '')
     doc.gsub!(/\s{2,}/, ' ')
