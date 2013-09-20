@@ -10,14 +10,14 @@ module SportsbookApi
 			@config = config
 		end
 
-		def get_tickets
-			px = ParseTickets.new(get_sb_data)
-			px.extract
+		def get_tickets(date_range)
+			data = get_sb_data(date_range)
+			ParseTickets.new(data).extract
 		end
 
-		def get_sb_data
+		def get_sb_data(date_range)
 			login
-			polish get_wager_data
+			polish get_wager_data(date_range)
 		end
 
 		def mechanize_agent
@@ -37,14 +37,18 @@ module SportsbookApi
 			end
 		end
 
-		def get_wager_data
+		def get_wager_data(date_range="LAST_31_DAYS")
 			mechanize_agent.get(WAGERS_URL) do |page|
 				filter_form = page.form_with(:name => 'getBets') do |filter|
+					raise "Sportsbook.ag Error - Likely unsuccessful login" unless filter
 					filter.betState = "0"
-					filter.dateRangeMode = "LAST_31_DAYS"
+					filter.dateRangeMode = date_range
 				end.submit
 				return filter_form.body
 			end
+		rescue => e
+			puts e.message
+			# puts e.backtrace
 		end
 
 		def polish(doc)

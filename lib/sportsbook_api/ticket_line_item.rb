@@ -4,7 +4,6 @@ module SportsbookApi
   class TicketLineItem
     include Virtus
 
-    attribute :type,              String
     attribute :away_team,         String
     attribute :away_score,        Integer
     attribute :home_team,         String

@@ -1,15 +1,12 @@
 module SportsbookApi
   class SportsbookConfig
-    def credentials
-      @file = YAML.load_file(File.expand_path(File.dirname(__FILE__) + '/../config/credentials.yml'))
+
+    attr_accessor :username, :password
+
+    def initialize(username, password)
+      @username = username
+      @password = password
     end
 
-    def username
-      credentials['username']
-    end
-
-    def password
-      credentials['password']
-    end
   end
 end
